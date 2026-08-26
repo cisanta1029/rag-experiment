@@ -1,0 +1,219 @@
+# Statistical significance
+
+> Source: [https://en.wikipedia.org/wiki/Statistical_significance](https://en.wikipedia.org/wiki/Statistical_significance)  
+> Retrieved from Wikipedia, licensed under CC BY-SA 4.0.
+
+---
+
+In statistical hypothesis testing, a result has statistical significance when a result at least as extreme would be very infrequent if the null hypothesis were true. More precisely, a study's defined significance level, denoted by 
+  
+    
+      
+        α
+      
+    
+    {\displaystyle \alpha }
+  
+, is the probability of the study rejecting the null hypothesis, given that the null hypothesis is true; and the p-value of a result, 
+  
+    
+      
+        p
+      
+    
+    {\displaystyle p}
+  
+, is the probability of obtaining a result at least as extreme, given that the null hypothesis is true. The result is said to be statistically significant, by the standards of the study, when 
+  
+    
+      
+        p
+        ≤
+        α
+      
+    
+    {\displaystyle p\leq \alpha }
+  
+. The significance level for a study is chosen before data collection, and is typically set to 5% or much lower—depending on the field of study.
+In any experiment or observation that involves drawing a sample from a population, there is always the possibility that an observed effect would have occurred due to sampling error alone. But if the p-value of an observed effect is less than (or equal to) the significance level, an investigator may conclude that the effect reflects the characteristics of the whole population, thereby rejecting the null hypothesis.
+This technique for testing the statistical significance of results was developed in the early 20th century. The term significance does not imply importance here, and the term statistical significance is not the same as research significance, theoretical significance, or practical significance. For example, the term clinical significance refers to the practical importance of a treatment effect.
+
+
+== History ==
+
+Statistical significance dates to the 18th century, in the work of John Arbuthnot and Pierre-Simon Laplace, who computed the p-value for the human sex ratio at birth, assuming a null hypothesis of equal probability of male and female births; see p-value § History for details.
+In 1925, Ronald Fisher advanced the idea of statistical hypothesis testing, which he called "tests of significance", in his publication Statistical Methods for Research Workers. Fisher suggested a probability of one in twenty (0.05) as a convenient cutoff level to reject the null hypothesis. In a 1933 paper, Jerzy Neyman and Egon Pearson called this cutoff the significance level, which they named 
+  
+    
+      
+        α
+      
+    
+    {\displaystyle \alpha }
+  
+. They recommended that 
+  
+    
+      
+        α
+      
+    
+    {\displaystyle \alpha }
+  
+ be set ahead of time, prior to any data collection.
+Despite his initial suggestion of 0.05 as a significance level, Fisher did not intend this cutoff value to be fixed. In his 1956 publication Statistical Methods and Scientific Inference, he recommended that significance levels be set according to specific circumstances.
+
+
+=== Related concepts ===
+The significance level 
+  
+    
+      
+        α
+      
+    
+    {\displaystyle \alpha }
+  
+ is the threshold for 
+  
+    
+      
+        p
+      
+    
+    {\displaystyle p}
+  
+ below which the null hypothesis is rejected even though by assumption it were true. This means that if indeed the null hypothesis is true, 
+  
+    
+      
+        α
+      
+    
+    {\displaystyle \alpha }
+  
+ is also the probability of mistakenly rejecting it anyway. This is also called false positive and type I error.
+Sometimes researchers talk about the confidence level γ = (1 − α) instead. This is the probability of not rejecting the null hypothesis given that it is true. Confidence levels and confidence intervals were introduced by Neyman in 1937.
+
+
+== Role in statistical hypothesis testing ==
+
+Statistical significance plays a pivotal role in statistical hypothesis testing. It is used to determine whether the null hypothesis should be rejected or retained. The null hypothesis is the hypothesis that no effect exists in the phenomenon being studied. For the null hypothesis to be rejected, an observed result has to be statistically significant, i.e. the observed p-value is less than the pre-specified significance level 
+  
+    
+      
+        α
+      
+    
+    {\displaystyle \alpha }
+  
+.
+To determine whether a result is statistically significant, a researcher calculates a p-value, which is the probability of observing an effect of the same magnitude or more extreme given that the null hypothesis is true. The null hypothesis is rejected if the p-value is less than (or equal to) a predetermined level, 
+  
+    
+      
+        α
+      
+    
+    {\displaystyle \alpha }
+  
+.  
+  
+    
+      
+        α
+      
+    
+    {\displaystyle \alpha }
+  
+ is also called the significance level, and is the probability of rejecting the null hypothesis given that it is true (a type I error). It is usually set at or below 5%.
+For example, when 
+  
+    
+      
+        α
+      
+    
+    {\displaystyle \alpha }
+  
+ is set to 5%, the conditional probability of a type I error, given that the null hypothesis is true, is 5%, and a statistically significant result is one where the observed p-value is less than (or equal to) 5%. When drawing data from a sample, this means that the rejection region comprises 5% of the sampling distribution. These 5% can be allocated to one side of the sampling distribution, as in a one-tailed test, or partitioned to both sides of the distribution, as in a two-tailed test, with each tail (or rejection region) containing 2.5% of the distribution.
+The use of a one-tailed test is dependent on whether the research question or alternative hypothesis specifies a direction such as whether a group of objects is heavier or the performance of students on an assessment is better. A two-tailed test may still be used but it will be less powerful than a one-tailed test, because the rejection region for a one-tailed test is concentrated on one end of the null distribution and is twice the size (5% vs. 2.5%) of each rejection region for a two-tailed test. As a result, the null hypothesis can be rejected with a less extreme result if a one-tailed test was used. The one-tailed test is only more powerful than a two-tailed test if the specified direction of the alternative hypothesis is correct. If it is wrong, however, then the one-tailed test has no power.
+
+
+=== Significance thresholds in specific fields ===
+
+In specific fields such as particle physics and manufacturing, statistical significance is often expressed in multiples of the standard deviation or sigma (σ) of a normal distribution, with significance thresholds set at a much stricter level (for example 5σ). For instance, the certainty of the Higgs boson particle's existence was based on the 5σ criterion, which corresponds to a p-value of about 1 in 3.5 million.
+In other fields of scientific research such as genome-wide association studies, significance levels as low as 5×10−8 are not uncommon—as the number of tests performed is extremely large.
+
+
+== Limitations ==
+Researchers focusing solely on whether their results are statistically significant might report findings that are not substantive and not replicable. There is also a difference between statistical significance and practical significance. A study that is found to be statistically significant may not necessarily be practically significant.
+
+
+=== Effect size ===
+
+Effect size is a measure of a study's practical significance. A statistically significant result may have a weak effect. To gauge the research significance of their result, researchers are encouraged to always report an effect size along with p-values. An effect size measure quantifies the strength of an effect, such as the distance between two means in units of standard deviation (cf. Cohen's d), the correlation coefficient between two variables or its square, and other measures.
+
+
+=== Reproducibility ===
+
+A statistically significant result may not be easy to reproduce. In particular, some statistically significant results will in fact be false positives. Each failed attempt to reproduce a result increases the likelihood that the result was a false positive.
+
+
+== Challenges ==
+
+
+=== Overuse in some journals ===
+Starting in the 2010s, some journals began questioning whether significance testing, and particularly using a threshold of α=5%, was being relied on too heavily as the primary measure of validity of a hypothesis. Some journals encouraged authors to do more detailed analysis than just a statistical significance test. In social psychology, the journal Basic and Applied Social Psychology banned the use of significance testing altogether from papers it published, requiring authors to use other measures to evaluate hypotheses and impact.
+Other editors, commenting on this ban have noted: "Banning the reporting of p-values, as Basic and Applied Social Psychology recently did, is not going to solve the problem because it is merely treating a symptom of the problem. There is nothing wrong with hypothesis testing and p-values per se as long as authors, reviewers, and action editors use them correctly." Some statisticians prefer to use alternative measures of evidence, such as likelihood ratios or Bayes factors. Using Bayesian statistics can avoid confidence levels, but also requires making additional assumptions, and may not necessarily improve practice regarding statistical testing.
+The widespread abuse of statistical significance represents an important topic of research in metascience.
+
+
+=== Redefining significance ===
+In 2016, the American Statistical Association (ASA) published a statement on p-values, saying that "the widespread use of 'statistical significance' (generally interpreted as 'p ≤ 0.05') as a license for making a claim of a scientific finding (or implied truth) leads to considerable distortion of the scientific process". In 2017, a group of 72 authors proposed to enhance reproducibility by changing the p-value threshold for statistical significance from 0.05 to 0.005. Other researchers responded that imposing a more stringent significance threshold would aggravate problems such as data dredging; alternative propositions are thus to select and justify flexible p-value thresholds before collecting data, or to interpret p-values as continuous indices, thereby discarding thresholds and statistical significance. Additionally, the change to 0.005 would increase the likelihood of false negatives, whereby the effect being studied is real, but the test fails to show it.
+
+In 2019, over 800 statisticians and scientists signed a message calling for the abandonment of the term "statistical significance" in science, and the ASA published an editorial  declaring (page 2): We conclude, based on our review of the articles in this special issue and the broader literature, that it is time to stop using the term "statistically significant" entirely. Nor should variants such as "significantly different," "
+  
+    
+      
+        p
+        ≤
+        0.05
+      
+    
+    {\displaystyle p\leq 0.05}
+  
+," and "nonsignificant" survive, whether expressed in words, by asterisks in a table, or in some other way.
+
+
+== See also ==
+
+A/B testing, ABX test
+Estimation statistics
+Fisher's method for combining independent tests of significance
+Look-elsewhere effect
+Multiple comparisons problem
+Sample size
+Texas sharpshooter fallacy (gives examples of tests where the significance level was set too high)
+
+
+== References ==
+
+
+== Further reading ==
+Imbens, Guido W. 2021. "Statistical Significance, p-Values, and the Reporting of Uncertainty." Journal of Economic Perspectives 35 (3): 157–74.
+Lydia Denworth, "A Significant Problem: Standard scientific methods are under fire. Will anything change?", Scientific American, vol. 321, no. 4 (October 2019), pp. 62–67. "The use of p values for nearly a century [since 1925] to determine statistical significance of experimental results has contributed to an illusion of certainty and [to] reproducibility crises in many scientific fields. There is growing determination to reform statistical analysis... Some [researchers] suggest changing statistical methods, whereas others would do away with a threshold for defining "significant" results." (p. 63.)
+Ziliak, Stephen and Deirdre McCloskey (2008), The Cult of Statistical Significance: How the Standard Error Costs Us Jobs, Justice, and Lives Archived 2010-06-08 at the Wayback Machine. Ann Arbor, University of Michigan Press, 2009. ISBN 978-0-472-07007-7. Reviews and reception: (compiled by Ziliak)
+Thompson, Bruce (2004). "The "significance" crisis in psychology and education". Journal of Socio-Economics. 33 (5): 607–613. doi:10.1016/j.socec.2004.09.034.
+Chow, Siu L., (1996). Statistical Significance: Rationale, Validity and Utility Archived 2013-12-03 at the Wayback Machine, Volume 1 of series Introducing Statistical Methods, Sage Publications Ltd, ISBN 978-0-7619-5205-3 – argues that statistical significance is useful in certain circumstances.
+Kline, Rex, (2004). Beyond Significance Testing: Reforming Data Analysis Methods in Behavioral Research Washington, DC: American Psychological Association.
+Nuzzo, Regina (2014). Scientific method: Statistical errors. Nature Vol. 506, p. 150-152 (open access). Highlights common misunderstandings about the p value.
+Cohen, Joseph (1994). [1] Archived 2017-07-13 at the Wayback Machine. The earth is round (p<.05). American Psychologist. Vol 49, p. 997-1003. Reviews problems with null hypothesis statistical testing.
+Amrhein, Valentin; Greenland, Sander; McShane, Blake (2019-03-20). "Scientists rise up against statistical significance". Nature. 567 (7748): 305–307. Bibcode:2019Natur.567..305A. doi:10.1038/d41586-019-00857-9. PMID 30894741.
+
+
+== External links ==
+
+The article "Earliest Known Uses of Some of the Words of Mathematics (S)" contains an entry on Significance that provides some historical information.
+"The Concept of Statistical Significance Testing Archived 2022-09-07 at the Wayback Machine" (February 1994): article by Bruce Thompon hosted by the ERIC Clearinghouse on Assessment and Evaluation, Washington, D.C.
+"What does it mean for a result to be "statistically significant"?" (no date): an article from the Statistical Assessment Service at George Mason University, Washington, D.C.

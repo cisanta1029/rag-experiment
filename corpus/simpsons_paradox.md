@@ -1,0 +1,574 @@
+# Simpson's paradox
+
+> Source: [https://en.wikipedia.org/wiki/Simpson%27s_paradox](https://en.wikipedia.org/wiki/Simpson%27s_paradox)  
+> Retrieved from Wikipedia, licensed under CC BY-SA 4.0.
+
+---
+
+Simpson's paradox is a phenomenon in probability and statistics in which a trend appears in several groups of data but disappears or reverses when the groups are combined. This result is often encountered in social science and medical science statistics, and is particularly problematic when frequency data are unduly given causal interpretations. The paradox can be resolved when confounding variables and causal relations are appropriately addressed in the statistical modeling (e.g., through cluster analysis).
+Simpson's paradox has been used to illustrate the kind of misleading results that the misuse of statistics can generate.
+Edward H. Simpson first described this phenomenon in a technical paper in 1951; the statisticians Karl Pearson (in 1899) and Udny Yule (in 1903) had mentioned similar effects earlier. The name Simpson's paradox was introduced by Colin R. Blyth in 1972. It is also referred to as Simpson's reversal, the Yule–Simpson effect, the amalgamation paradox, or the reversal paradox.
+
+
+== Examples ==
+
+
+=== UC Berkeley gender bias ===
+
+One of the best-known examples of Simpson's paradox comes from a study of gender bias among graduate school admissions to University of California, Berkeley. The admission figures for the fall of 1973 showed that men applying were more likely than women to be admitted, and the difference was so large that it was unlikely to be due to chance.
+
+However, when taking into account the information about departments being applied to, the different rejection percentages reveal the different difficulty of getting into the department, and at the same time, it showed that women tended to apply to more competitive departments with lower rates of admission, even among qualified applicants (such as in the English department), whereas men tended to apply to less competitive departments with higher rates of admission (such as in the engineering department). The pooled and corrected data showed a "small but statistically significant bias in favor of women".
+The data from the six largest departments are listed below:
+
+The entire data showed a total of 4 out of 85 departments to be significantly biased against women, while 6 were shown to be significantly biased against men (not all present in the 'six largest departments' table above). Notably, the numbers of biased departments were not the basis for the conclusion, but rather it was the gender admissions pooled across all departments, while weighing by each department's rejection rate across all of its applicants.
+
+
+=== Kidney stone treatment ===
+Another example comes from a real-life medical study comparing the success rates of two treatments for kidney stones. The table below shows the success rates and numbers of treatments for both small and large kidney stones, where Treatment A includes open surgical procedures and Treatment B includes closed surgical procedures. The numbers in parentheses indicate the number of success cases over the total size of the group.
+
+The paradoxical conclusion is that treatment A is more effective when used on small stones, and also when used on large stones, yet treatment B appears to be more effective when considering both sizes at the same time. In this example, the "lurking" variable (or confounding variable) causing the paradox is the size of the stones, which was not previously known to researchers to be important until its effects were included.
+Which treatment is considered better is determined by which success ratio (successes/total) is larger. The reversal of the inequality between the two ratios when considering the combined data, which creates Simpson's paradox, happens because two effects occur together:
+
+The sizes of the groups, which are combined when the lurking variable is ignored, are very different. Doctors tend to give cases with large stones the better treatment A, and the cases with small stones the inferior treatment B. Therefore, the totals are dominated by groups 3 and 2, and not by the two much smaller groups 1 and 4.
+The lurking variable, stone size, has a large effect on the ratios; i.e., the success rate is more strongly influenced by the severity of the case than by the choice of treatment. Therefore, the group of patients with large stones using treatment A (group 3) does worse than the group with small stones, even if the latter used the inferior treatment B (group 2).
+Based on these effects, the paradoxical result is seen to arise because the effect of the size of the stones overwhelms the benefits of the better treatment (A). In short, the less effective treatment B appeared to be more effective because it was applied more frequently to the small stones cases, which were easier to treat, so that whichever treatment was selected was more likely to be successful.
+Jaynes argues that the correct conclusion is that though treatment A remains noticeably better than treatment B, the kidney stone size is more important.
+
+
+=== Batting averages ===
+A common example of Simpson's paradox involves the batting averages of players in professional baseball. It is possible for one player to have a higher batting average than another player each year for a number of years, but to have a lower batting average across all of those years. This phenomenon can occur when there are large differences in the number of at bats between the years. Mathematician Ken Ross demonstrated this using the batting average of two baseball players, Derek Jeter and David Justice, during the years 1995 and 1996:
+
+In both 1995 and 1996, Justice had a higher batting average (in bold type) than Jeter did. However, when the two baseball seasons are combined, Jeter shows a higher batting average than Justice. According to Ross, this phenomenon would be observed about once per year among the possible pairs of players.
+
+
+== Vector interpretation ==
+
+Simpson's paradox can also be illustrated using a 2-dimensional vector space. A success rate of 
+  
+    
+      
+        
+          
+            p
+            q
+          
+        
+      
+    
+    {\textstyle {\frac {p}{q}}}
+  
+ (i.e., successes/attempts) can be represented by a vector 
+  
+    
+      
+        
+          
+            
+              A
+              →
+            
+          
+        
+        =
+        (
+        q
+        ,
+        p
+        )
+      
+    
+    {\displaystyle {\vec {A}}=(q,p)}
+  
+, with a slope of 
+  
+    
+      
+        
+          
+            p
+            q
+          
+        
+      
+    
+    {\textstyle {\frac {p}{q}}}
+  
+. A steeper vector then represents a greater success rate. If two rates 
+  
+    
+      
+        
+          
+            
+              p
+              
+                1
+              
+            
+            
+              q
+              
+                1
+              
+            
+          
+        
+      
+    
+    {\textstyle {\frac {p_{1}}{q_{1}}}}
+  
+ and 
+  
+    
+      
+        
+          
+            
+              p
+              
+                2
+              
+            
+            
+              q
+              
+                2
+              
+            
+          
+        
+      
+    
+    {\textstyle {\frac {p_{2}}{q_{2}}}}
+  
+ are combined, as in the examples given above, the result can be represented by the sum of the vectors 
+  
+    
+      
+        (
+        
+          q
+          
+            1
+          
+        
+        ,
+        
+          p
+          
+            1
+          
+        
+        )
+      
+    
+    {\displaystyle (q_{1},p_{1})}
+  
+ and 
+  
+    
+      
+        (
+        
+          q
+          
+            2
+          
+        
+        ,
+        
+          p
+          
+            2
+          
+        
+        )
+      
+    
+    {\displaystyle (q_{2},p_{2})}
+  
+, which according to the parallelogram rule is the vector 
+  
+    
+      
+        (
+        
+          q
+          
+            1
+          
+        
+        +
+        
+          q
+          
+            2
+          
+        
+        ,
+        
+          p
+          
+            1
+          
+        
+        +
+        
+          p
+          
+            2
+          
+        
+        )
+      
+    
+    {\displaystyle (q_{1}+q_{2},p_{1}+p_{2})}
+  
+, with slope 
+  
+    
+      
+        
+          
+            
+              
+                p
+                
+                  1
+                
+              
+              +
+              
+                p
+                
+                  2
+                
+              
+            
+            
+              
+                q
+                
+                  1
+                
+              
+              +
+              
+                q
+                
+                  2
+                
+              
+            
+          
+        
+      
+    
+    {\textstyle {\frac {p_{1}+p_{2}}{q_{1}+q_{2}}}}
+  
+.
+Simpson's paradox says that even if a vector 
+  
+    
+      
+        
+          
+            
+              
+                L
+                →
+              
+            
+          
+          
+            1
+          
+        
+      
+    
+    {\displaystyle {\vec {L}}_{1}}
+  
+ (in orange in figure) has a smaller slope than another vector 
+  
+    
+      
+        
+          
+            
+              
+                B
+                →
+              
+            
+          
+          
+            1
+          
+        
+      
+    
+    {\displaystyle {\vec {B}}_{1}}
+  
+ (in blue), and 
+  
+    
+      
+        
+          
+            
+              
+                L
+                →
+              
+            
+          
+          
+            2
+          
+        
+      
+    
+    {\displaystyle {\vec {L}}_{2}}
+  
+ has a smaller slope than 
+  
+    
+      
+        
+          
+            
+              
+                B
+                →
+              
+            
+          
+          
+            2
+          
+        
+      
+    
+    {\displaystyle {\vec {B}}_{2}}
+  
+, the sum of the two vectors 
+  
+    
+      
+        
+          
+            
+              
+                L
+                →
+              
+            
+          
+          
+            1
+          
+        
+        +
+        
+          
+            
+              
+                L
+                →
+              
+            
+          
+          
+            2
+          
+        
+      
+    
+    {\displaystyle {\vec {L}}_{1}+{\vec {L}}_{2}}
+  
+ can potentially still have a larger slope than the sum of the two vectors 
+  
+    
+      
+        
+          
+            
+              
+                B
+                →
+              
+            
+          
+          
+            1
+          
+        
+        +
+        
+          
+            
+              
+                B
+                →
+              
+            
+          
+          
+            2
+          
+        
+      
+    
+    {\displaystyle {\vec {B}}_{1}+{\vec {B}}_{2}}
+  
+, as shown in the example. For this to occur, one of the orange vectors must have a greater slope than one of the blue vectors (here 
+  
+    
+      
+        
+          
+            
+              
+                L
+                →
+              
+            
+          
+          
+            2
+          
+        
+      
+    
+    {\displaystyle {\vec {L}}_{2}}
+  
+ and 
+  
+    
+      
+        
+          
+            
+              
+                B
+                →
+              
+            
+          
+          
+            1
+          
+        
+      
+    
+    {\displaystyle {\vec {B}}_{1}}
+  
+), and these will generally be longer than the alternatively subscripted vectors—thereby dominating the overall comparison.
+
+
+== Correlation between variables ==
+Simpson's reversal can also arise in correlations, in which two variables appear to have (say) a positive correlation towards one another, when in fact they have a negative correlation, the reversal having been brought about by a "lurking" confounder. Berman et al. give an example from economics, where a dataset suggests overall demand is positively correlated with price (that is, higher prices lead to more demand), in contradiction of expectation. Analysis reveals time to be the confounding variable: plotting both price and demand against time reveals the expected negative correlation over various periods, which then reverses to become positive if the influence of time is ignored by simply plotting demand against price.
+
+
+== Psychology ==
+Psychological interest in Simpson's paradox seeks to explain why people deem sign reversal to be impossible at first. The question is where people get this strong intuition from, and how it is encoded in the mind.
+Simpson's paradox demonstrates that this intuition cannot be derived from either classical logic or probability calculus alone, and thus led philosophers to speculate that it is supported by an innate causal logic that guides people in reasoning about actions and their consequences. Savage's sure-thing principle is an example of what such logic may entail. A qualified version of Savage's sure thing principle can indeed be derived from Pearl's do-calculus and reads, "An action A that increases the probability of an event B in each subpopulation Ci of C must also increase the probability of B in the population as a whole, provided that the action does not change the distribution of the subpopulations." This suggests that knowledge about actions and consequences is stored in a form resembling Causal Bayesian Networks.
+
+
+== Probability ==
+A paper by Pavlides and Perlman presents a proof, due to Hadjicostas, that in a random 2 × 2 × 2 table with uniform distribution, Simpson's paradox will occur with a probability of exactly 1⁄60. A study by Kock suggests that the probability that Simpson's paradox would occur at random in path models (i.e., models generated by path analysis) with two predictors and one criterion variable is approximately 12.8 percent; slightly higher than 1 occurrence per 8 path models.
+
+
+== Simpson's second paradox ==
+A second, less well-known paradox was also discussed in Simpson's 1951 paper. It can occur when the "sensible interpretation" is not necessarily found in the separated data, like in the kidney stone example, but can instead reside in the combined data. Whether the partitioned or combined form of the data should be used hinges on the process giving rise to the data, meaning the correct interpretation of the data cannot always be determined by simply observing the tables.
+Judea Pearl has shown that, in order for the partitioned data to represent the correct causal relationships between any two variables, 
+  
+    
+      
+        X
+      
+    
+    {\displaystyle X}
+  
+ and 
+  
+    
+      
+        Y
+      
+    
+    {\displaystyle Y}
+  
+, the partitioning variables must satisfy a graphical condition called "back-door criterion":
+
+They must block all spurious paths between 
+  
+    
+      
+        X
+      
+    
+    {\displaystyle X}
+  
+ and 
+  
+    
+      
+        Y
+      
+    
+    {\displaystyle Y}
+  
+
+No variable can be affected by 
+  
+    
+      
+        X
+      
+    
+    {\displaystyle X}
+  
+
+This criterion provides an algorithmic solution to Simpson's second paradox, and explains why the correct interpretation cannot be determined by data alone; two different graphs, both compatible with the data, may dictate two different backdoor criteria.
+When the backdoor criterion is satisfied by a set Z of covariates, the adjustment formula (see confounding) gives the correct causal effect of X on Y. If no such set exists, Pearl's do-calculus can be invoked to discover other ways of estimating the causal effect. The completeness of do-calculus  can be viewed as offering a complete resolution of the Simpson's paradox.
+
+
+== Criticism ==
+One criticism is that the paradox is not really a paradox at all, but rather a failure to properly account for confounding variables or to consider causal relationships between variables. Focus on the paradox may distract from these more important statistical issues.
+Another criticism of the apparent Simpson's paradox is that it may be a result of the specific way that data are stratified or grouped. The phenomenon may disappear or even reverse if the data is stratified differently or if different confounding variables are considered. Simpson's example actually highlighted a phenomenon called noncollapsibility, which occurs when subgroups with high proportions do not make simple averages when combined. This suggests that the paradox may not be a universal phenomenon, but rather a specific instance of a more general statistical issue.
+Despite these criticisms, the apparent Simpson's paradox remains a popular and intriguing topic in statistics and data analysis. It continues to be studied and debated by researchers and practitioners in a wide range of fields, and it serves as a valuable reminder of the importance of careful statistical analysis and the potential pitfalls of simplistic interpretations of data.
+
+
+== See also ==
+Aliasing – Signal processing effect
+Anscombe's quartet – Four data sets with the same descriptive statistics, yet very different distributions
+Berkson's paradox – Tendency to misinterpret statistical experiments involving conditional probabilities
+Cherry picking – Fallacy of incomplete evidence
+Condorcet paradox – Self-contradiction of majority rule
+Ecological fallacy – Formal fallacy in statistical interpretation
+Gerrymandering – Form of political manipulation
+Low birth-weight paradox – Statistical quirk of babies' birth weights
+Modifiable areal unit problem – Source of statistical bias
+Prosecutor's fallacy – Logic error due to ignoring the base ratePages displaying short descriptions of redirect targets
+Will Rogers phenomenon – Statistical phenomenon and paradox
+Spurious correlation
+Omitted-variable bias
+
+
+== References ==
+
+
+== Bibliography ==
+Leila Schneps and Coralie Colmez, Math on trial. How numbers get used and abused in the courtroom, Basic Books, 2013. ISBN 978-0-465-03292-1. (Sixth chapter: "Math error number 6: Simpson's paradox. The Berkeley sex bias case: discrimination detection").
+
+
+== External links ==
+
+Simpson's Paradox at the Stanford Encyclopedia of Philosophy, by Jan Sprenger and Naftali Weinberger.
+How statistics can be misleading – Mark Liddell – TED-Ed video and lesson.
+Pearl, Judea, "Understanding Simpson's Paradox" (PDF)
+Simpson's Paradox, a short article by Alexander Bogomolny on the vector interpretation of Simpson's paradox
+The Wall Street Journal column "The Numbers Guy" for December 2, 2009 dealt with recent instances of Simpson's paradox in the news. Notably a Simpson's paradox in the comparison of unemployment rates of the 2009 recession with the 1983 recession.
+At the Plate, a Statistical Puzzler: Understanding Simpson's Paradox by Arthur Smith, August 20, 2010
+Simpson's Paradox, a video by Henry Reich of MinutePhysics
