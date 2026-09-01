@@ -12,8 +12,11 @@ To use:
 """
 
 import os
-from langchain_community.document_loaders import DirectoryLoader, TextLoader
+import glob
+from langchain_core.documents import Document
 from langchain_text_splitters import RecursiveCharacterTextSplitter
+from langchain_huggingface import HuggingFaceEmbeddings
+from langchain_chroma import Chroma
 
 # save corpus and chroma_db directories as constants
 CORPUS_DIR = os.path.join(os.path.dirname(__file__), "..", "corpus")
@@ -22,19 +25,22 @@ CHROMA_DIR = os.path.join(os.path.dirname(__file__), "..", "chroma_db")
 # this is the local embedding model
 EMBEDDING_MODEL = "sentence-transformers/all-MiniLM-L6-v2"
 
-def load_documents():
+def load_documents() -> list:
     """
-    Read in the markdown docs from the corpus directory
-    """
-    loader = DirectoryLoader(
-        CORPUS_DIR,
-        glob="*.md",
-        loader_cls=TextLoader,
-        loader_kwargs={"encoding": "utf-8"},
-    )
-    return loader.load()
+    Read in the markdown docs from the corpus directory.
 
-def chunk_documents(documents):
+    Returns:
+        a list of Document objects, each containing the text in each markdown file.
+    """
+    documents = []
+    for filepath in glob.glob(os.path.join(CORPUS_DIR, "*.md")):
+        #print(filepath)
+        with open(filepath, "r", encoding="utf-8") as f:
+            content = f.read()
+        documents.append(Document(page_content=content, metadata={"source": filepath}))
+    return documents
+
+def chunk_documents(documents) -> list:
     """
     Splits documents into chunks.
     ~ 1 paragraph per chunk, with some overlap before and after for context
@@ -45,3 +51,29 @@ def chunk_documents(documents):
         separators=["\n\n", "\n", ". ", " ", ""],
     )
     return splitter.split_documents(documents)
+
+def main():
+    pass
+
+if __name__ == "__main__":
+    print(f"Reading in docs from {os.path.abspath(CORPUS_DIR)} ...")
+    documents = load_documents()
+    print(f"  Loaded {len(documents)} documents")
+    print(documents[0])
+
+    print("Chunking ...")
+    chunks = chunk_documents(documents)
+    print(f"  Produced {len(chunks)} chunks")
+
+    print(f"Embedding with {EMBEDDING_MODEL} and storing in Chroma ...")
+    embeddings = HuggingFaceEmbeddings(model_name=EMBEDDING_MODEL)
+
+    vectordb = Chroma.from_documents(
+        documents=chunks,
+        embedding=embeddings,
+        persist_directory=CHROMA_DIR,
+    )
+
+    print(f"\nDone. Vector store persisted to {os.path.abspath(CHROMA_DIR)}")
+
+    main()
