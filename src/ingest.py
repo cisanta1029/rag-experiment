@@ -56,6 +56,9 @@ def chunk_documents(documents) -> list:
     return splitter.split_documents(documents)
 
 def main():
+    """
+    Load docs, chunk, then embed and store into vector database.
+    """
     print(f"Reading in docs from {os.path.abspath(CORPUS_DIR)} ...")
     documents = load_documents()
     print(f"  Loaded {len(documents)} documents")
