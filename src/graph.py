@@ -69,10 +69,79 @@ def _extract_text(response) -> str:
 
 def retrieve_node(state: GraphState) -> GraphState:
     """
-    Question is embedded and ANN search is executed (similarity_search) to
-    return the top-k chunks with vectors closest to the query vectors.
+    Question is embedded and ANN search is executed (similarity_search)
+
+    Returns the state object, updated with the top-k chunks with vectors 
+    closest to the query vectors.
     """
     vectordb = _get_vectordb()
     docs = vectordb.similarity_search(state["question"], k=TOP_K)
     chunks = [d.page_content for d in docs]
     return {**state, "chunks": chunks}
+
+
+""" #use this if we force a structured output from the llm (v2)
+from pydantic import BaseModel, Field
+from typing import Literal
+
+class ContextGrade(BaseModel):
+    #Grade for whether retrieved context is sufficient to answer the question.
+    grade: Literal["sufficient", "insufficient"] = Field(
+        description="Whether the retrieved context contains enough information to answer the question"
+    )
+
+def grade_node(state: GraphState) -> GraphState:
+    llm = _get_llm()
+    structured_llm = llm.with_structured_output(ContextGrade)
+    
+    context = "\n\n---\n\n".join(state["chunks"])
+    prompt = (
+        "Determine whether the retrieved context below is sufficient to "
+        "answer the question.\n\n"
+        f"Question: {state['original_question']}\n\n"
+        f"Retrieved context:\n{context}"
+    )
+    
+    result = structured_llm.invoke(prompt)
+    grade = result.grade   # already "sufficient" or "insufficient" -- no parsing
+"""
+
+
+def grade_node(state: GraphState) -> GraphState:
+    llm = _get_llm()
+    context = "\n\n---\n\n".join(state["chunks"])
+    prompt = (
+        "You are grading whether retrieved context is sufficient to answer "
+        "a question. Respond with exactly one word: 'sufficient' or "
+        "'insufficient'.\n\n"
+        f"Question: {state['original_question']}\n\n"
+        f"Retrieved context:\n{context}\n\n"
+        "Grade:"
+    )
+
+    #result = _extract_text(llm.invoke(prompt)).strip().lower()
+    result = llm.invoke(prompt).text.strip().lower()
+
+    # check to see if the result contains the word sufficient or insufficient. 
+    # There may be a way to force the models to give only responses of 'sufficient' or 'insufficient'. 
+    # If so, we can deprecate this if/elif/else statement.
+
+    if "insufficient" in result:
+        grade = "insufficient"
+    elif "sufficient" in result:
+        grade = "sufficient"
+    else:
+        grade = "insufficient"  # unclear response -> fail safe, retry
+
+    attempts = state["attempts"] + 1
+    log_entry = {
+        "attempt": attempts,
+        "question": state["current_question"],
+        "grade": grade,
+    }
+    return {
+        **state,
+        "grade": grade,
+        "attempts": attempts,
+        "attempt_log": state["attempt_log"] + [log_entry],
+    }
