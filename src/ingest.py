@@ -17,6 +17,9 @@ from langchain_core.documents import Document
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_huggingface import HuggingFaceEmbeddings
 from langchain_chroma import Chroma
+from dotenv import load_dotenv
+
+load_dotenv()
 
 # save corpus and chroma_db directories as constants
 CORPUS_DIR = os.path.join(os.path.dirname(__file__), "..", "corpus")
@@ -53,13 +56,9 @@ def chunk_documents(documents) -> list:
     return splitter.split_documents(documents)
 
 def main():
-    pass
-
-if __name__ == "__main__":
     print(f"Reading in docs from {os.path.abspath(CORPUS_DIR)} ...")
     documents = load_documents()
     print(f"  Loaded {len(documents)} documents")
-    print(documents[0])
 
     print("Chunking ...")
     chunks = chunk_documents(documents)
@@ -76,4 +75,5 @@ if __name__ == "__main__":
 
     print(f"\nDone. Vector store persisted to {os.path.abspath(CHROMA_DIR)}")
 
+if __name__ == "__main__":
     main()
