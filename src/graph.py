@@ -4,6 +4,7 @@ from langchain_huggingface import HuggingFaceEmbeddings
 from langchain_chroma import Chroma
 from langchain_anthropic import ChatAnthropic
 from langchain_google_genai import ChatGoogleGenerativeAI
+from langgraph.graph import StateGraph, END
 
 # save chroma_db directory and embedding model as constant 
 # (consider environment variable between this and ingest.py)
@@ -80,7 +81,8 @@ def retrieve_node(state: GraphState) -> GraphState:
     return {**state, "chunks": chunks}
 
 
-""" #use this if we force a structured output from the llm (v2)
+""" #test this to see if we can force a structured "sufficient/insufficient" response from the llm 
+# without parsing
 from pydantic import BaseModel, Field
 from typing import Literal
 
@@ -122,7 +124,7 @@ def grade_node(state: GraphState) -> GraphState:
     #result = _extract_text(llm.invoke(prompt)).strip().lower()
     result = llm.invoke(prompt).text.strip().lower()
 
-    # check to see if the result contains the word sufficient or insufficient. 
+    # parsing the result to see if it contains the word sufficient or insufficient. 
     # There may be a way to force the models to give only responses of 'sufficient' or 'insufficient'. 
     # If so, we can deprecate this if/elif/else statement.
 
@@ -145,3 +147,82 @@ def grade_node(state: GraphState) -> GraphState:
         "attempts": attempts,
         "attempt_log": state["attempt_log"] + [log_entry],
     }
+
+def reformulate_node(state: GraphState) -> GraphState:
+    """
+    If the grade is insufficient, ask Claude to rewrite the question, then loop back to retrieve.
+
+    Returns the state object with a new current_question
+    """
+
+    llm = _get_llm()
+    prompt = (
+        "The following question did not retrieve sufficient context from "
+        "a knowledge base. Rewrite it to be more likely to match relevant "
+        "documents (e.g. add synonyms, be more specific, or rephrase). "
+        "Return ONLY the rewritten question.\n\n"
+        f"Original question: {state['original_question']}\n"
+        f"Previous attempt: {state['current_question']}\n"
+    )
+    #new_question = _extract_text(llm.invoke(prompt)).strip()
+    new_question = llm.invoke(prompt).text.strip()
+    return {**state, "current_question": new_question}
+
+def generate_node(state: GraphState) -> GraphState:
+    """
+    once grading passes (or the attempt cap is reached), builds the "using only this context, answer this"
+    prompt, then passes it back to the LLM.
+
+    Returns the state object with a an updated response (answer)
+    """
+
+    llm = _get_llm()
+    context = "\n\n---\n\n".join(state["chunks"])
+    prompt = (
+        "Using only the following context, answer the question. If the "
+        "context is not sufficient, say so rather than guessing.\n\n"
+        f"Context:\n{context}\n\n"
+        f"Question: {state['original_question']}"
+    )
+    answer = llm.invoke(prompt).text
+    return {**state, "response": answer}
+
+def route_after_grade(state: GraphState) -> str:
+    """
+    Branching logic that says "if grade is sufficient, go to regenerate; else go to reformulate"
+
+    Returns a conditional edge to be used in the graph (generate or reformulate).
+    """
+
+    if state["grade"] == "sufficient" or state["attempts"] >= MAX_ATTEMPTS:
+        return "generate"
+    return "reformulate"
+
+def build_graph():
+    """
+    Builds the graph that will read and write from the shared state
+
+    Returns a compiled graph
+    """
+
+    # instantiate the graph
+    graph = StateGraph(GraphState)
+
+    # create the nodes
+    graph.add_node("retrieve", retrieve_node)
+    graph.add_node("grade_context", grade_node)
+    graph.add_node("reformulate", reformulate_node)
+    graph.add_node("generate", generate_node)
+
+    # designate the start point, edges and end point
+    graph.set_entry_point("retrieve")
+    graph.add_edge("retrieve", "grade_context")
+    graph.add_conditional_edges(
+        "grade_context",
+        route_after_grade,
+        {"generate": "generate", "reformulate": "reformulate"},
+    )
+    graph.add_edge("reformulate", "retrieve")
+    graph.add_edge("generate", END)
+
+    return graph.compile()
