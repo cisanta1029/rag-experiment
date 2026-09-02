@@ -5,6 +5,9 @@ from langchain_chroma import Chroma
 from langchain_anthropic import ChatAnthropic
 from langchain_google_genai import ChatGoogleGenerativeAI
 from langgraph.graph import StateGraph, END
+from dotenv import load_dotenv
+
+load_dotenv()
 
 # save chroma_db directory and embedding model as constant 
 # (consider environment variable between this and ingest.py)
@@ -17,7 +20,8 @@ TOP_K = 3
 # constant defining which LLM provider to use. One of the benefits of 
 # LangChain is that it allows us to swap providers in a modular way, 
 # without needing to rewrite the pipeline. Outputs are standardized
-LLM_PROVIDER = os.environ.get("LLM_PROVIDER", "anthropic")  # "anthropic" or "google"
+#LLM_PROVIDER = os.environ.get("LLM_PROVIDER", "anthropic")  # "anthropic" or "google"
+LLM_PROVIDER="google" # or "anthropic"
 
 ANTHROPIC_MODEL = "claude-sonnet-5"
 GEMINI_MODEL = "gemini-2.5-flash"
@@ -50,7 +54,9 @@ def _get_llm():
     returns LLM acccording to value provided by LLM_PROVIDER
     """
     if LLM_PROVIDER == "google":
+        print(f'{GEMINI_MODEL} loaded')
         return ChatGoogleGenerativeAI(model=GEMINI_MODEL, temperature=0)
+    print(f'{ANTHROPIC_MODEL} loaded')
     return ChatAnthropic(model=ANTHROPIC_MODEL)
 
 """
