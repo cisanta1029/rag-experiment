@@ -202,7 +202,8 @@ def build_graph():
     """
     Builds the graph that will read and write from the shared state
 
-    Returns a compiled graph
+    Returns:
+        A compiled graph
     """
 
     # instantiate the graph
@@ -226,3 +227,31 @@ def build_graph():
     graph.add_edge("generate", END)
 
     return graph.compile()
+
+def run(question: str) -> GraphState:
+    """
+    Passes a single question through the full RAG pipeline.
+
+    Compiles the graph, seeds the initial state with the user's question
+    (all other fields start empty and are populated by the nodes as they
+    run), then executes the graph to completion.
+
+    Args:
+        question: The user's question/prompt.
+
+    Returns:
+        The final GraphState (after execution reaches END), containing the
+        generated answer (response), the chunks used as context for the answer
+        , and the full attempt_log of every retrieve/grade cycle.
+    """
+    app = build_graph()
+    initial_state: GraphState = {
+        "original_question": question,
+        "current_question": question,
+        "chunks": [],
+        "grade": "",
+        "attempts": 0,
+        "attempt_log": [],
+        "response": "",
+    }
+    return app.invoke(initial_state)
