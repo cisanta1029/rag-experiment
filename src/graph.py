@@ -51,7 +51,7 @@ def _get_llm():
     """
     if LLM_PROVIDER == "google":
         return ChatGoogleGenerativeAI(model=GEMINI_MODEL, temperature=0)
-    return ChatAnthropic(model=ANTHROPIC_MODEL, temperature=0)
+    return ChatAnthropic(model=ANTHROPIC_MODEL)
 
 """
 def _extract_text(response) -> str:
@@ -76,7 +76,7 @@ def retrieve_node(state: GraphState) -> GraphState:
     closest to the query vectors.
     """
     vectordb = _get_vectordb()
-    docs = vectordb.similarity_search(state["question"], k=TOP_K)
+    docs = vectordb.similarity_search(state["current_question"], k=TOP_K)
     chunks = [d.page_content for d in docs]
     return {**state, "chunks": chunks}
 
