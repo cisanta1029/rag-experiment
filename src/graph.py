@@ -54,8 +54,8 @@ def _get_llm():
     """
     if LLM_PROVIDER == "google":
         print(f'{GEMINI_MODEL} loaded')
-        return ChatGoogleGenerativeAI(model=GEMINI_MODEL, temperature=0)
-    print(f'{ANTHROPIC_MODEL} loaded')
+        #return ChatGoogleGenerativeAI(model=GEMINI_MODEL, temperature=0)
+    #print(f'{ANTHROPIC_MODEL} loaded')
     return ChatAnthropic(model=ANTHROPIC_MODEL)
 
 """

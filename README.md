@@ -4,11 +4,29 @@ A retrieval-augmented generation (RAG) system, built with LangChain and LangGrap
 
 Unlike a straight-line RAG chain, this pipeline grades its own retrieval before answering: if the retrieved context doesn't look sufficient, it rewrites the question and tries again. That control flow is what makes LangGraph the right tool here rather than LangChain alone.
 
+## Repo structure
+
+```
+├── corpus/              # Wikipedia articles as markdown, one per topic
+├── chroma_db/           # persisted vector store (generated, gitignored)
+├── src/
+│   ├── fetch_corpus.py  # pulls the corpus from the MediaWiki API
+│   ├── ingest.py        # chunks, embeds, and stores the corpus
+│   ├── graph.py         # the LangGraph pipeline: nodes, edges, and state
+│   └── query.py         # CLI entry point for a single question
+├── requirements.txt
+└── .env.example
+```
+
 ## Why this project
 
 I created this project to build hands-on fluency with the modern LLM application stack (chunking, embeddings, vector search, and agentic control flow).
 
 The corpus is built around experimentation and causal inference concepts rather than an arbitrary dataset. That was deliberate: my day-to-day work involves designing nested RCTs with BAU holdout groups and using difference-in-differences to isolate incremental causal lift, so the subject matter of the knowledge base and the instincts behind evaluating whether a retrieval system is actually working come from the same place. Choosing a topic I can independently verify the answers to also makes it much easier to tell whether the pipeline is retrieving well or just producing plausible-sounding text.
+
+## Architecture
+
+Two phases, running at different times.
 
 ### Phase 1: Indexing (`src/ingest.py`)
 
@@ -16,7 +34,7 @@ The corpus is built around experimentation and causal inference concepts rather 
 corpus/*.md  ->  chunk  ->  embed  ->  store in Chroma
 ```
 
-Markdown documents are read from `corpus/`, split into overlapping chunks, embedded with a local sentence-transformers model, and stored in a Chroma vector database. This is only to be run once to build the chunks' vector database, and agaih whenever the corpus changes.
+Markdown documents are read from `corpus/`, split into overlapping chunks, embedded with a local sentence-transformers model, and stored in a Chroma vector database. This is only to be run once to build the chunks' vector database, and again whenever the corpus changes.
 
 ### Phase 2: Query (`src/graph.py`)
 
@@ -52,7 +70,7 @@ Routing between `grade_context` and the two downstream nodes is handled by a con
 
 **Chroma as the vector store.** Chosen for zero-infrastructure local development, with no server to stand up, and appropriate for a corpus of this size. A production system operating on millions of vectors would want a managed vector database instead. Chroma stores document text and metadata in SQLite alongside a persisted HNSW index for the ANN search itself.
 
-**Corpus sourced from Wikipedia.** A curated list of articles were pulled directly from the MediaWiki API using a script. Articles were saved as an .md file; each with a source URL and CC BY-SA attribution header, keeping the corpus legally clean for this repo.
+**Corpus sourced from Wikipedia.** A curated list of articles were pulled directly from the MediaWiki API using a script. Articles were saved as an .md file, each with a source URL and CC BY-SA attribution header, keeping the corpus legally clean for this repo.
 
 **State design: overwrite vs. accumulate.** `current_question`, `chunks`, and `grade` are overwritten on each pass, since only the latest attempt matters for generation. `attempt_log` accumulates one entry per attempt, giving a record of every retrieve/grade cycle without needing a separate tracing tool. `original_question` is deliberately held fixed and separate from `current_question`, so reformulation never loses sight of what was actually asked.
 
@@ -69,61 +87,85 @@ python -m venv venv
 source venv/bin/activate          # Windows: venv\Scripts\activate
 pip install -r requirements.txt
 
-cp .env.example .env              # then add your API key(s)
+cp .env.example .env
+```
 
+Then set the provider and its matching key in `.env`:
+
+```
+LLM_PROVIDER=anthropic        # or "google"
+ANTHROPIC_API_KEY=...         # required if LLM_PROVIDER=anthropic
+GOOGLE_API_KEY=...            # required if LLM_PROVIDER=google
+```
+
+Only the key for your selected provider is needed. Embeddings run locally and require no key.
+
+```bash
 python src/fetch_corpus.py        # pull the Wikipedia corpus
 python src/ingest.py              # chunk, embed, and store
 python src/query.py "Why would you use difference-in-differences instead of a simple before/after comparison?"
 ```
+
+Note: `ingest.py` appends to the existing collection rather than replacing it, so re-running it without clearing `chroma_db/` first will store duplicate copies of every chunk, which surfaces as retrieval returning the same text multiple times. Delete the directory before re-ingesting. Making this idempotent is on the list below.
 
 `query.py` prints the attempt log (showing each retrieve/grade cycle and the question used), a preview of the chunks retrieved on the final attempt, and the generated answer.
 
 ## Example
 
 ```
-$ python src/query.py "what is selection bias?"
+$ python src/query.py "Why would you use difference-in-differences instead of a simple before/after comparison?"
 
-Question: what is selection bias?
+Question: Why would you use difference-in-differences instead of a simple
+before/after comparison?
 
 Running question through RAG pipeline...
 
 ==============================
 ATTEMPT LOG
 ==============================
-  Attempt 1: grade=sufficient
-    Question used: what is selection bias?
+  Attempt 1: grade=insufficient
+    Question used: Why would you use difference-in-differences instead of a
+    simple before/after comparison?
+  Attempt 2: grade=sufficient
+    Question used: Why is the difference-in-differences (DiD) econometric
+    method often preferred over a simple one-group before-and-after
+    comparison for evaluating the impact of an intervention, particularly
+    when needing to control for unobserved time trends or confounding
+    factors?
 ==============================
 RETRIEVED CHUNKS (final attempt)
 ==============================
-  [1] # Selection bias  > Source: [https://en.wikipedia.org/wiki/Selection_bias]...
-  [2] == Related issues == Selection bias is closely related to:...
-  [3] == Mitigation == In the general case, selection biases cannot be overcome
-      with statistical analysis of existing data alone, though Heckman
-      correction may be used in special cases...
+  [1] Difference in differences (DID or DD) is a quasi-experimental statistical
+      technique used in econometrics and quantitative research in the social
+      sciences that attempts to mimic an experimental researc...
+  [2] == Applications == The difference-in-differences (DID) framework has been
+      applied widely beyond labor economics and minimum wage studies. In
+      public health, DID has been used to evaluate the effect of...
+  [3] As illustrated in the figure, the treatment effect is the difference
+      between the observed value of y and what the value of y would have been
+      with parallel trends, had there been no treatment. However,...
 ==============================
 ANSWER
 ==============================
-Based on the context, selection bias is the bias introduced by the selection
-of individuals, groups, or data for analysis in such a way that the
-association between exposure and outcome among those selected differs from
-the association among those eligible.
+You would use difference-in-differences instead of a simple before/after
+comparison because DID incorporates a control group.
 
-It typically occurs when researchers condition on a factor that is influenced
-both by the exposure and the outcome (or their causes), which creates a false
-association between them.
-
-Selection bias encompasses several forms, including differential
-loss-to-follow-up, incidence-prevalence bias, volunteer bias, healthy-worker
-bias, and nonresponse bias.
+A simple before/after comparison would only look at the treatment group.
+Difference-in-differences, however, compares the average change over time in
+the outcome variable for the treatment group to the average change over time
+for the control group. This approach attempts to mimic an experimental
+research design using observational study data by studying the differential
+effect of a treatment, which a simple before/after comparison alone cannot
+achieve.
 ```
 
-Two things worth noticing in this run.
+Three things worth noticing in this run.
 
-First, the correction loop did not fire. Grading passed on the first attempt, so `route_after_grade` sent execution straight to `generate` and `reformulate` never ran. The attempt log confirms this. A second or third entry would indicate retrieval failed initially and the question was rewritten.
+First, the correction loop fired. Grading marked the first retrieval insufficient, so `route_after_grade` sent execution to `reformulate` rather than `generate`, and the rewritten question went back through `retrieve` for a second pass. The attempt log makes both passes visible, including exactly what the question was rewritten to.
 
-Second, the answer synthesizes across all three retrieved chunks rather than restating the closest match. The definition comes from the first chunk, the conditioning mechanism from the second, and the enumerated forms of selection bias are drawn from a different section of the article than the definition. Retrieval's job is to surface candidate context; the connecting is done at generation time.
+Second, observe what the reformulation actually did. The original phrasing was conversational. The rewrite added the full term alongside its acronym (difference-in-differences -> DiD), named the field, and surfaced the concepts the answer depends on (unobserved time trends, confounding factors). Those additions give the embedding model considerably more to match against, which is the entire point of the step. Semantic search is not keyword matching, but a question phrased closer to the vocabulary of the source material still lands closer to it in vector space.
 
-Note: `ingest.py` appends to the existing collection rather than replacing it, so re-running it without clearing `chroma_db/` first will store duplicate copies of every chunk; which surfaces as retrieval returning the same text multiple times. Delete the directory before re-ingesting. Making this idempotent is on the list below.
+Third, the answer synthesizes across the retrieved chunks rather than restating the closest match. The definition and the quasi-experimental framing come from the first chunk, while the control-group comparison that actually answers the question is drawn from the mechanics described elsewhere in the retrieved context. Retrieval's job is to surface candidate material; the connecting is done at generation time.
 
 ## Next steps
 
