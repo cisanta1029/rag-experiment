@@ -39,10 +39,10 @@ Markdown documents are read from `corpus/`, split into overlapping chunks, embed
 
 A LangGraph state machine with four nodes:
 
-- **retrieve** — embeds the current question and runs approximate nearest neighbor ("ANN") search against Chroma, returning the top-k chunks (code currently set to k=3)
-- **grade_context** — asks the LLM whether the retrieved chunks are sufficient to answer the question, and logs the attempt
-- **reformulate** — rewrites the question when grading fails, then routes back to retrieve
-- **generate** — builds the final "using only this context, answer the question" prompt and returns the answer
+- **retrieve** - embeds the current question and runs approximate nearest neighbor ("ANN") search against Chroma, returning the top-k chunks (code currently set to k=3)
+- **grade_context** - asks the LLM whether the retrieved chunks are sufficient to answer the question, and logs the attempt
+- **reformulate** - rewrites the question when grading fails, then routes back to retrieve
+- **generate** - builds the final "using only this context, answer the question" prompt and returns the answer
 
 Routing between `grade_context` and the two downstream nodes is handled by a conditional edge (`route_after_grade`), capped at three attempts so the loop can't run indefinitely (preserving token usage in the process). This pattern is often called corrective or self-correcting RAG.
 
@@ -50,13 +50,13 @@ Routing between `grade_context` and the two downstream nodes is handled by a con
 
 **Embeddings run locally.** `sentence-transformers/all-MiniLM-L6-v2` runs on the local machine rather than through a paid embeddings API. Only the three LLM-calling nodes hit an external API, which keeps iteration on the ingestion side fast and free.
 
-**Chroma as the vector store.** Chosen for zero-infrastructure local development — no server to stand up, and appropriate for a corpus of this size. A production system operating on millions of vectors would want a managed vector database instead. Chroma stores document text and metadata in SQLite alongside a persisted HNSW index for the ANN search itself.
+**Chroma as the vector store.** Chosen for zero-infrastructure local development, with no server to stand up, and appropriate for a corpus of this size. A production system operating on millions of vectors would want a managed vector database instead. Chroma stores document text and metadata in SQLite alongside a persisted HNSW index for the ANN search itself.
 
 **Corpus sourced from Wikipedia.** A curated list of articles were pulled directly from the MediaWiki API using a script. Articles were saved as an .md file; each with a source URL and CC BY-SA attribution header, keeping the corpus legally clean for this repo.
 
 **State design: overwrite vs. accumulate.** `current_question`, `chunks`, and `grade` are overwritten on each pass, since only the latest attempt matters for generation. `attempt_log` accumulates one entry per attempt, giving a record of every retrieve/grade cycle without needing a separate tracing tool. `original_question` is deliberately held fixed and separate from `current_question`, so reformulation never loses sight of what was actually asked.
 
-**Migrated off `langchain-community`.** That package was sunset in 2026 and its repository archived. Embeddings and the vector store moved to their dedicated packages (`langchain-huggingface`, `langchain-chroma`). Document loading was replaced with plain Python — a `glob` over the corpus directory constructing `Document` objects directly — following the maintainers' own stated position that simple functionality is better written as application code than pulled in as a shared dependency.
+**Migrated off `langchain-community`.** That package was sunset in 2026 and its repository archived. Embeddings and the vector store moved to their dedicated packages (`langchain-huggingface`, `langchain-chroma`). Document loading was replaced with plain Python (using a `glob` over the corpus directory constructing `Document` objects directly).
 
 **Using `.text` rather than `.content`.** Provider response shapes are not identical: Anthropic returns a plain string on `.content`, while Gemini can return a list of content blocks, which breaks string methods. This initially got a custom normalization helper before I found LangChain's built-in `.text` property on `BaseMessage`, which handles both shapes. This served as a lesson that a standardized interface doesn't always mean identical behavior underneath.
 
@@ -123,7 +123,7 @@ First, the correction loop did not fire. Grading passed on the first attempt, so
 
 Second, the answer synthesizes across all three retrieved chunks rather than restating the closest match. The definition comes from the first chunk, the conditioning mechanism from the second, and the enumerated forms of selection bias are drawn from a different section of the article than the definition. Retrieval's job is to surface candidate context; the connecting is done at generation time.
 
-Note: `ingest.py` appends to the existing collection rather than replacing it, so re-running it without clearing `chroma_db/` first will store duplicate copies of every chunk — which surfaces as retrieval returning the same text multiple times. Delete the directory before re-ingesting. Making this idempotent is on the list below.
+Note: `ingest.py` appends to the existing collection rather than replacing it, so re-running it without clearing `chroma_db/` first will store duplicate copies of every chunk; which surfaces as retrieval returning the same text multiple times. Delete the directory before re-ingesting. Making this idempotent is on the list below.
 
 ## Next steps
 

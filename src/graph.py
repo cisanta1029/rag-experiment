@@ -20,8 +20,7 @@ TOP_K = 3
 # constant defining which LLM provider to use. One of the benefits of 
 # LangChain is that it allows us to swap providers in a modular way, 
 # without needing to rewrite the pipeline. Outputs are standardized
-#LLM_PROVIDER = os.environ.get("LLM_PROVIDER", "anthropic")  # "anthropic" or "google"
-LLM_PROVIDER="google" # or "anthropic"
+LLM_PROVIDER = os.environ.get("LLM_PROVIDER")  # "anthropic" or "google"
 
 ANTHROPIC_MODEL = "claude-sonnet-5"
 GEMINI_MODEL = "gemini-2.5-flash"
